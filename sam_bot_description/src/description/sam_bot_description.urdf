@@ -221,7 +221,7 @@
   </gazebo>
  
   <gazebo>
-    <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
+    <plugin name='gz::sim::systems::DiffDrive' filename='gz-sim-diff-drive-system'>
       <ros>
         <namespace>/demo</namespace>
       </ros>
@@ -232,19 +232,19 @@
 
       <!-- kinematics -->
       <wheel_separation>0.4</wheel_separation>
-      <wheel_diameter>0.2</wheel_diameter>
+      <wheel_radius>0.1</wheel_radius>
 
       <!-- limits -->	
-      <max_wheel_torque>20</max_wheel_torque>
-      <max_wheel_acceleration>1.0</max_wheel_acceleration>
+      <!-- <max_wheel_torque>20</max_wheel_torque> -->
+      <max_angular_acceleration>1.0</max_angular_acceleration>
 
       <!-- output -->
-      <publish_odom>true</publish_odom>
+      <!-- <publish_odom>true</publish_odom>
       <publish_odom_tf>false</publish_odom_tf>
-      <publish_wheel_tf>true</publish_wheel_tf>
+      <publish_wheel_tf>true</publish_wheel_tf> -->
 
-      <odometry_frame>odom</odometry_frame>
-      <robot_base_frame>base_link</robot_base_frame>
+      <odom_topic>odom</odom_topic>
+      <!-- <robot_base_frame>base_link</robot_base_frame> -->
     </plugin>
   </gazebo>
 
