@@ -42,6 +42,7 @@
 #include <string>
 #include <memory>
 #include "nav2_util/node_utils.hpp"
+#include "tf2/LinearMath/Quaternion.h"
 
 #include "nav2_straightline_planner/straight_line_planner.hpp"
 
@@ -119,15 +120,23 @@ nav_msgs::msg::Path StraightLine::createPlan(
   double x_increment = (goal.pose.position.x - start.pose.position.x) / total_number_of_loop;
   double y_increment = (goal.pose.position.y - start.pose.position.y) / total_number_of_loop;
 
+  std::array<double, 2> direction_vector = {goal.pose.position.x - start.pose.position.x, goal.pose.position.y - start.pose.position.y};
+  double magnitude = std::hypot(direction_vector[0], direction_vector[1]);
+  direction_vector[0] /= magnitude;
+  direction_vector[1] /= magnitude;
+  tf2::Quaternion q_yaw;
+  q_yaw.setRPY(0, 0, std::atan2(direction_vector[1], direction_vector[0]));
+  q_yaw.normalize();
+
   for (int i = 0; i < total_number_of_loop; ++i) {
     geometry_msgs::msg::PoseStamped pose;
     pose.pose.position.x = start.pose.position.x + x_increment * i;
     pose.pose.position.y = start.pose.position.y + y_increment * i;
     pose.pose.position.z = 0.0;
-    pose.pose.orientation.x = 0.0;
-    pose.pose.orientation.y = 0.0;
-    pose.pose.orientation.z = 0.0;
-    pose.pose.orientation.w = 1.0;
+    pose.pose.orientation.x = q_yaw.x();
+    pose.pose.orientation.y = q_yaw.y();
+    pose.pose.orientation.z = q_yaw.z();
+    pose.pose.orientation.w = q_yaw.w();
     pose.header.stamp = node_->now();
     pose.header.frame_id = global_frame_;
     global_path.poses.push_back(pose);
